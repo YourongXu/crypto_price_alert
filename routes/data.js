@@ -3,11 +3,9 @@ import { fetchMarketData, fetchGlobalData, fetchFearGreed } from '../services/cr
 
 export const dataRouter = Router();
 
-const COIN_IDS = 'bitcoin,ethereum,solana,ripple,binancecoin,dogecoin,tron,cardano';
-
 dataRouter.get('/prices', async (req, res) => {
   try {
-    const data = await fetchMarketData(COIN_IDS);
+    const data = await fetchMarketData();
     res.json(data);
   } catch (e) {
     res.status(500).json({ error: e.message });

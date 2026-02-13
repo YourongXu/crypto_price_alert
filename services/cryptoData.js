@@ -1,6 +1,6 @@
 import fetch from 'node-fetch';
 
-// --- Cache layer to avoid CoinGecko rate limits (429) ---
+// --- Cache layer ---
 const cache = {};
 const CACHE_TTL = 600_000; // 10 minutes
 
@@ -10,11 +10,6 @@ async function cachedFetch(key, url, transform) {
     return cache[key].data;
   }
   const res = await fetch(url);
-  if (res.status === 429) {
-    // Rate limited — return stale cache if available
-    if (cache[key]) return cache[key].data;
-    throw new Error('Rate limited by CoinGecko');
-  }
   if (!res.ok) {
     if (cache[key]) return cache[key].data;
     throw new Error(`Fetch failed: ${res.status}`);
@@ -25,21 +20,65 @@ async function cachedFetch(key, url, transform) {
   return data;
 }
 
-export function fetchMarketData(coinIds) {
-  const url = `https://api.coingecko.com/api/v3/simple/price?ids=${coinIds}&vs_currencies=usd&include_24hr_change=true&include_market_cap=true&include_24hr_vol=true`;
-  return cachedFetch('prices', url);
+// CoinPaprika ID → CoinGecko ID (frontend uses CoinGecko IDs)
+const COINS = [
+  { paprika: 'btc-bitcoin', gecko: 'bitcoin' },
+  { paprika: 'eth-ethereum', gecko: 'ethereum' },
+  { paprika: 'sol-solana', gecko: 'solana' },
+  { paprika: 'xrp-xrp', gecko: 'ripple' },
+  { paprika: 'bnb-binance-coin', gecko: 'binancecoin' },
+  { paprika: 'doge-dogecoin', gecko: 'dogecoin' },
+  { paprika: 'trx-tron', gecko: 'tron' },
+  { paprika: 'ada-cardano', gecko: 'cardano' },
+];
+
+export async function fetchMarketData() {
+  const cacheKey = 'prices';
+  const now = Date.now();
+  if (cache[cacheKey] && now - cache[cacheKey].ts < CACHE_TTL) {
+    return cache[cacheKey].data;
+  }
+
+  const results = await Promise.all(
+    COINS.map(async (c) => {
+      try {
+        const res = await fetch(`https://api.coinpaprika.com/v1/tickers/${c.paprika}`);
+        if (!res.ok) return null;
+        const json = await res.json();
+        const q = json.quotes?.USD;
+        return {
+          geckoId: c.gecko,
+          usd: q?.price ?? null,
+          usd_24h_change: q?.percent_change_24h ?? null,
+          usd_market_cap: q?.market_cap ?? null,
+          usd_24h_vol: q?.volume_24h ?? null,
+        };
+      } catch {
+        return null;
+      }
+    })
+  );
+
+  const data = {};
+  for (const r of results) {
+    if (r) data[r.geckoId] = { usd: r.usd, usd_24h_change: r.usd_24h_change, usd_market_cap: r.usd_market_cap, usd_24h_vol: r.usd_24h_vol };
+  }
+
+  if (Object.keys(data).length > 0) {
+    cache[cacheKey] = { data, ts: now };
+  }
+  return data;
 }
 
 export function fetchGlobalData() {
-  return cachedFetch('global', 'https://api.coingecko.com/api/v3/global', (json) => {
-    const d = json.data;
+  return cachedFetch('global', 'https://api.coinpaprika.com/v1/global', (json) => {
     return {
-      totalMarketCap: d.total_market_cap?.usd ?? 0,
-      totalVolume: d.total_volume?.usd ?? 0,
-      marketCapChange24h: d.market_cap_change_percentage_24h_usd ?? 0,
-      volumeChange24h: d.volume_change_percentage_24h_usd ?? 0,
-      btcDominance: d.market_cap_percentage?.btc ?? 0,
-      ethDominance: d.market_cap_percentage?.eth ?? 0,
+      totalMarketCap: json.market_cap_usd ?? 0,
+      totalVolume: json.volume_24h_usd ?? 0,
+      marketCapChange24h: json.market_cap_change_24h ?? null,
+      volumeChange24h: json.volume_24h_change_24h ?? null,
+      btcDominance: json.bitcoin_dominance_percentage ?? 0,
+      ethDominance: 0, // CoinPaprika doesn't provide ETH dominance directly
     };
   });
 }

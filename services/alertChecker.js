@@ -3,7 +3,6 @@ import { fetchMarketData } from './cryptoData.js';
 import { sendAlertEmail } from './emailService.js';
 import { buildAlertEmailHtml } from './emailTemplates.js';
 
-const COIN_IDS = 'bitcoin,ethereum,solana,ripple,binancecoin,dogecoin,tron,cardano';
 const CHECK_INTERVAL_MS = 10 * 60 * 1000; // 10 minutes
 
 export async function checkAlerts() {
@@ -17,7 +16,7 @@ export async function checkAlerts() {
 
   let prices;
   try {
-    prices = await fetchMarketData(COIN_IDS);
+    prices = await fetchMarketData();
   } catch (e) {
     console.error('[AlertChecker] Fetch prices failed:', e.message);
     return;
