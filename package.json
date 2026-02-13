@@ -1,0 +1,19 @@
+{
+  "name": "cryptoalert-pro",
+  "version": "1.0.0",
+  "description": "Crypto price alert tool with real-time data and email notifications",
+  "type": "module",
+  "scripts": {
+    "start": "node server.js",
+    "dev": "node --watch server.js"
+  },
+  "dependencies": {
+    "cors": "^2.8.5",
+    "dotenv": "^16.6.1",
+    "express": "^4.21.0",
+    "node-fetch": "^3.3.2",
+    "nodemailer": "^6.9.16",
+    "resend": "^6.9.2",
+    "uuid": "^10.0.0"
+  }
+}

@@ -1,0 +1,155 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>CryptoAlert Pro | Price Alerts</title>
+  <link rel="stylesheet" href="styles.css">
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&display=swap" rel="stylesheet">
+</head>
+<body>
+  <!-- CMC-style top header -->
+  <header class="top-header">
+    <div class="top-header-inner">
+      <div class="top-header-left">
+        <span>Cryptos: <strong id="hCryptoCount">8</strong></span>
+        <span>Market Cap: <strong id="hMC">--</strong> <em id="hMCCh" class="ch"></em></span>
+        <span>24h Vol: <strong id="hVol">--</strong> <em id="hVolCh" class="ch"></em></span>
+        <span>Dominance: BTC: <strong id="hBtc">--%</strong> ETH: <strong id="hEth">--%</strong></span>
+        <span>Fear &amp; Greed: <strong id="hFg">--</strong>/100</span>
+      </div>
+    </div>
+  </header>
+
+  <!-- CMC-style nav -->
+  <nav class="nav-bar">
+    <div class="nav-inner">
+      <a href="/" class="nav-logo">
+        <svg width="22" height="22" viewBox="0 0 76.52 77.67" fill="none"><path d="M38.26 0C17.13 0 0 17.41 0 38.83c0 21.43 17.13 38.84 38.26 38.84 21.12 0 38.26-17.41 38.26-38.84S59.38 0 38.26 0zm17.96 49.14c-1.32 2.14-4.16 2.9-6.37 1.67l-6.53-3.64c-1.48-.82-2.41-2.37-2.41-4.06V28.18c0-1.15.94-2.09 2.09-2.09 1.15 0 2.09.93 2.09 2.09v14.93l6.53 3.64c2.21 1.23 2.98 4 1.67 6.14l-.07.12v-.06.19z" fill="#3861fb"/></svg>
+        <span>CoinMarket</span>
+      </a>
+      <div class="nav-links">
+        <a href="#" class="active">Cryptocurrencies</a>
+        <a href="#">Dashboards</a>
+        <a href="#">DexScan</a>
+        <a href="#">Exchanges</a>
+        <a href="#">Community</a>
+        <a href="#">Products</a>
+      </div>
+      <div class="nav-right">
+        <a href="#">Portfolio</a>
+        <a href="#">Watchlist</a>
+        <div class="nav-search">
+          <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><circle cx="11" cy="11" r="8"/><path d="m21 21-4.35-4.35"/></svg>
+          <input type="text" placeholder="Search" class="nav-search-input">
+        </div>
+        <button type="button" class="nav-btn-login">Log In</button>
+      </div>
+    </div>
+  </nav>
+
+  <!-- Main two-column layout -->
+  <main class="workspace">
+    <aside class="left-panel">
+      <div class="alert-card">
+        <div class="alert-card-head">
+          <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M18 8A6 6 0 0 0 6 8c0 7-3 9-3 9h18s-3-2-3-9"/><path d="M13.73 21a2 2 0 0 1-3.46 0"/></svg>
+          <h2>Price Alert</h2>
+        </div>
+        <form class="alert-form" id="alertForm">
+          <div class="field">
+            <label>Cryptocurrency</label>
+            <div class="custom-select" id="cryptoSelectWrap">
+              <input type="hidden" id="cryptoSelect" required>
+              <button type="button" class="cs-trigger" id="cryptoTrigger">
+                <span class="cs-label">Select crypto...</span>
+                <svg class="cs-arrow" width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><polyline points="6 9 12 15 18 9"/></svg>
+              </button>
+              <ul class="cs-menu" id="cryptoMenu">
+                <li data-value="bitcoin" data-symbol="BTC" data-name="Bitcoin">Bitcoin (BTC)</li>
+                <li data-value="ethereum" data-symbol="ETH" data-name="Ethereum">Ethereum (ETH)</li>
+                <li data-value="solana" data-symbol="SOL" data-name="Solana">Solana (SOL)</li>
+                <li data-value="ripple" data-symbol="XRP" data-name="XRP">XRP (XRP)</li>
+                <li data-value="binancecoin" data-symbol="BNB" data-name="BNB">BNB (BNB)</li>
+                <li data-value="dogecoin" data-symbol="DOGE" data-name="Dogecoin">Dogecoin (DOGE)</li>
+                <li data-value="tron" data-symbol="TRX" data-name="TRON">TRON (TRX)</li>
+                <li data-value="cardano" data-symbol="ADA" data-name="Cardano">Cardano (ADA)</li>
+              </ul>
+            </div>
+          </div>
+          <div class="field-row">
+            <div class="field">
+              <label>Condition</label>
+              <div class="custom-select" id="conditionWrap">
+                <input type="hidden" id="condition" value="above">
+                <button type="button" class="cs-trigger" id="conditionTrigger">
+                  <span class="cs-label">Above ↑</span>
+                  <svg class="cs-arrow" width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><polyline points="6 9 12 15 18 9"/></svg>
+                </button>
+                <ul class="cs-menu" id="conditionMenu">
+                  <li data-value="above">Above ↑</li>
+                  <li data-value="below">Below ↓</li>
+                </ul>
+              </div>
+            </div>
+            <div class="field">
+              <label>Target Price</label>
+              <input type="number" id="targetPrice" step="any" min="0" placeholder="0.00" required>
+            </div>
+          </div>
+          <div class="field">
+            <label>Email</label>
+            <input type="email" id="email" placeholder="your@email.com" required>
+          </div>
+          <button type="submit" class="btn-alert">+ Set Alert</button>
+        </form>
+        <div class="alert-tags" id="activeAlertsInline"></div>
+      </div>
+    </aside>
+
+    <section class="right-panel">
+      <table class="cmc-table" id="cryptoTable">
+        <thead>
+          <tr>
+            <th class="th-star"></th>
+            <th class="th-rank">#</th>
+            <th class="th-name">Name</th>
+            <th class="th-num">Price</th>
+            <th class="th-num">1h %</th>
+            <th class="th-num">24h %</th>
+            <th class="th-num">7d %</th>
+            <th class="th-num">Market Cap</th>
+            <th class="th-num">Volume(24h)</th>
+            <th class="th-num">Circulating Supply</th>
+            <th class="th-chart">Last 7 Days</th>
+          </tr>
+        </thead>
+        <tbody id="cryptoTableBody">
+          <tr><td colspan="11" class="table-msg">Loading...</td></tr>
+        </tbody>
+      </table>
+    </section>
+  </main>
+
+  <!-- CMC-style bottom ticker -->
+  <footer class="bottom-bar">
+    <div class="bottom-bar-inner">
+      <span>Cryptos: <strong>8</strong></span>
+      <span>Market Cap: <strong id="fMC">--</strong> <em id="fMCCh" class="ch"></em></span>
+      <span>24h Vol: <strong id="fVol">--</strong> <em id="fVolCh" class="ch"></em></span>
+      <span>Dominance: BTC: <strong id="fBtc">--%</strong> ETH: <strong id="fEth">--%</strong></span>
+      <span>Fear &amp; Greed: <strong id="fFg">--</strong>/100</span>
+    </div>
+  </footer>
+
+  <!-- Toast -->
+  <div class="toast" id="toast" hidden>
+    <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="#16c784" stroke-width="3"><path d="M20 6L9 17l-5-5"/></svg>
+    <span id="toastMessage"></span>
+  </div>
+
+  <script src="app.js"></script>
+</body>
+</html>
