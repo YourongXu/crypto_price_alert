@@ -333,6 +333,12 @@ body {
   padding: 0;
 }
 .alert-tag button:hover { color: var(--red); }
+.alert-tag.triggered {
+  background: #dcfce7;
+  color: var(--green);
+  text-decoration: line-through;
+  opacity: 0.7;
+}
 
 /* === CMC Table === */
 .cmc-table {
