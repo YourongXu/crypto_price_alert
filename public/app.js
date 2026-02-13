@@ -133,9 +133,7 @@ function renderAlerts(list) {
   if (!list.length) { c.innerHTML = ''; return; }
   c.innerHTML = list.map(a => {
     const cond = a.condition === 'above' ? '↑' : '↓';
-    const cls = a.triggered ? 'alert-tag triggered' : 'alert-tag';
-    const status = a.triggered ? ' ✓' : '';
-    return `<span class="${cls}">${a.symbol} ${cond} $${Number(a.targetPrice).toLocaleString()}${status} <button data-id="${a.id}">×</button></span>`;
+    return `<span class="alert-tag">${a.symbol} ${cond} $${Number(a.targetPrice).toLocaleString()} <button data-id="${a.id}">×</button></span>`;
   }).join('');
   c.querySelectorAll('button').forEach(b => b.addEventListener('click', () => deleteAlert(b.dataset.id)));
 }
@@ -146,7 +144,7 @@ async function loadAlerts() {
     if (!r.ok) return;
     const d = await r.json();
     activeAlerts = d.filter(a => !a.triggered);
-    renderAlerts(d); // show ALL alerts (active + triggered)
+    renderAlerts(activeAlerts);
     renderTable();
   } catch {}
 }

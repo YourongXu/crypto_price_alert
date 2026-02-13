@@ -21,7 +21,6 @@ alertsRouter.post('/', (req, res) => {
     }
     const alert = addAlert({ cryptoId, symbol, name, condition, targetPrice: Number(targetPrice), email });
     res.status(201).json(alert);
-    // Check immediately after creating a new alert
     setTimeout(() => checkAlerts(), 1000);
   } catch (e) {
     res.status(500).json({ error: e.message });
