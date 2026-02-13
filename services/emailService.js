@@ -1,9 +1,14 @@
 import nodemailer from 'nodemailer';
 
 let resendClient = null;
-if (process.env.RESEND_API_KEY) {
-  const { Resend } = await import('resend');
-  resendClient = new Resend(process.env.RESEND_API_KEY);
+try {
+  if (process.env.RESEND_API_KEY) {
+    const { Resend } = await import('resend');
+    resendClient = new Resend(process.env.RESEND_API_KEY);
+    console.log('[Email] Resend configured');
+  }
+} catch (e) {
+  console.error('[Email] Failed to init Resend:', e.message);
 }
 
 function getTransporter() {
